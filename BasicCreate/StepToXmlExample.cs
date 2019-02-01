@@ -20,7 +20,6 @@ namespace BasicExamples
                     //just have a look that it contains the same number of entities and walls.
                     var stepCount = stepModel.Instances.Count;
                     var xmlCount = xmlModel.Instances.Count;
-
                     var stepWallsCount = stepModel.Instances.CountOf<IIfcWall>();
                     var xmlWallsCount = xmlModel.Instances.CountOf<IIfcWall>();
 

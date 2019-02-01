@@ -34,9 +34,10 @@ namespace ExcelReportExample
             var volumeFormatId = volumeFormat.GetFormat("# ##0.00 [$m³]");
             var volumeStyle = workbook.CreateCellStyle();
             volumeStyle.DataFormat = volumeFormatId;
-
+            IfcStore.ModelProviderFactory.UseHeuristicModelProvider();
 
             //Open IFC model. We are not going to change anything in the model so we can leave editor credentials out.
+
             using (var model = IfcStore.Open("SampleHouse.ifc"))
             {
                 //Get all spaces in the model. 

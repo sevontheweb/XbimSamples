@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Serilog;
 using System.IO;
+using System;
 using Xbim.Common;
 using Xbim.Ifc;
 using Xbim.ModelGeometry.Scene;
@@ -9,7 +10,7 @@ namespace CreateWexBIM
 {
     class Program
     {
-        public static void Main()
+        public static int Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
                .Enrich.FromLogContext()
@@ -23,9 +24,16 @@ namespace CreateWexBIM
             // set up xBIM logging. It will use your providers.
             XbimLogging.LoggerFactory = lf;
 
-            const string fileName = @"SampleHouse.ifc";
-            log.LogInformation($"File size: {new FileInfo(fileName).Length / 1e6}MB");
+            //const string fileName = @"SampleHouse.ifc";
+            string fileName = GetInputFilePath(args);
+            if (fileName == null)
+            {
+                log.LogError("You must specify an input file.");
+                return -1;
+            }
 
+            log.LogInformation($"File size: {new FileInfo(fileName).Length / 1e6}MB");
+            IfcStore.ModelProviderFactory.UseHeuristicModelProvider();
             using (var model = IfcStore.Open(fileName, null, -1))
             {
                 var context = new Xbim3DModelContext(model);
@@ -42,6 +50,16 @@ namespace CreateWexBIM
                     wexBimFile.Close();
                 }
             }
+            return 0;
+        }
+
+        private static String GetInputFilePath(string[] args)
+        {
+            if (args != null && args.Length > 0)
+            {
+                return args[0];
+            }
+            return null;
         }
     }
 }
